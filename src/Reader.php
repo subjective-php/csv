@@ -10,7 +10,7 @@ class Reader implements \Iterator
     /**
      * The column headers.
      *
-     * @var array
+     * @var array|null
      */
     private $headers;
 
@@ -52,7 +52,7 @@ class Reader implements \Iterator
     /**
      * The current row within the csv file.
      *
-     * @var array
+     * @var array|false|null
      */
     private $current = null;
 
