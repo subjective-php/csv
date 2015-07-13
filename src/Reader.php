@@ -98,42 +98,45 @@ class Reader implements \Iterator
      */
     public function next()
     {
-        $raw = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure, $this->escapeChar);
-        if (empty($raw)) {
+        try {
+            $raw = $this->readLine();
+            if ($this->current !== null) {
+                ++$this->position;
+                $this->current = array_combine($this->headers, $raw);
+            }
+
+            if ($this->headers === null) {
+                //No headers given, derive from first line of file
+                $this->headers = $raw;
+                $this->current = array_combine($this->headers, $this->readLine());
+                return;
+            }
+
+            //Headers given, skip first line if header line
+            if ($raw === $this->headers) {
+                $raw = $this->readLine();
+            }
+
+            $this->current = array_combine($this->headers, $raw);
+        } catch (\Exception $e) {
             $this->current = false;
             return false;
         }
+    }
 
-        if ($this->headers === null && $this->current === null) {
-            //No headers given, derive from first line of file
-            $this->headers = $raw;
-            $raw = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure, $this->escapeChar);
-            if (empty($raw)) {
-                $this->current = false;
-                return false;
-            }
-
-            $this->current = array_combine($this->headers, $raw);
-            return;
+    /**
+     * Helper method to read the next line in the delimited file.
+     *
+     * @return array|false
+     */
+    private function readLine()
+    {
+        $raw = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure, $this->escapeChar);
+        if (empty($raw)) {
+            throw new \Exception('Empty line read');
         }
 
-        if ($this->headers !== null && $this->current == null) {
-            //Headers given, skip first line if header line
-            if ($raw === $this->headers) {
-                $raw = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure, $this->escapeChar);
-                if (empty($raw)) {
-                    $this->current = false;
-                    return false;
-                }
-            }
-
-            $this->current = array_combine($this->headers, $raw);
-            return;
-        }
-
-        ++$this->position;
-
-        $this->current = array_combine($this->headers, $raw);
+        return $raw;
     }
 
     /**

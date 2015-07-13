@@ -9,6 +9,7 @@ use Chadicus\Csv\Reader;
  * @coversDefaultClass \Chadicus\Csv\Reader
  * @covers ::__construct
  * @covers ::__destruct
+ * @covers ::<private>
  */
 final class ReaderTest extends \PHPUnit_Framework_TestCase
 {
