@@ -68,27 +68,19 @@ class Reader implements \Iterator
      */
     public function __construct($file, array $headers = null, $delimiter = ',', $enclosure = '"', $escapeChar = '\\')
     {
-        if (!is_string($file)) {
-            throw new \InvalidArgumentException('$file must be a string containing a full path to a delimited file');
+        if (!is_readable((string)$file)) {
+            throw new \InvalidArgumentException('$file must be a string containing a full path to a readable delimited file');
         }
 
-        if (!is_file($file)) {
-            throw new \InvalidArgumentException('$file was not a valid file name');
-        }
-
-        if (!is_readable($file)) {
-            throw new \InvalidArgumentException('$file was not readable');
-        }
-
-        if (!is_string($delimiter) || strlen($delimiter) !== 1) {
+        if (strlen($delimiter) !== 1) {
             throw new \InvalidArgumentException('$delimiter must be a single character string');
         }
 
-        if (!is_string($enclosure) || strlen($enclosure) !== 1) {
+        if (strlen($enclosure) !== 1) {
             throw new \InvalidArgumentException('$enclosure must be a single character string');
         }
 
-        if (!is_string($escapeChar) || strlen($escapeChar) !== 1) {
+        if (strlen($escapeChar) !== 1) {
             throw new \InvalidArgumentException('$escapeChar must be a single character string');
         }
 
@@ -96,7 +88,7 @@ class Reader implements \Iterator
         $this->delimiter = $delimiter;
         $this->enclosure = $enclosure;
         $this->escapeChar = $escapeChar;
-        $this->handle = fopen($file, 'r');
+        $this->handle = fopen((string)$file, 'r');
     }
 
     /**

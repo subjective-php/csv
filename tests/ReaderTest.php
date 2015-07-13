@@ -86,14 +86,14 @@ final class ReaderTest extends \PHPUnit_Framework_TestCase
      *
      * @test
      * @covers ::__construct
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage $file must be a string containing a full path to a readable delimited file
      * @dataProvider getFiles
      *
      * @return void
      */
-    public function constructInvalidFileParam($file, $expectedMessage)
+    public function constructInvalidFileParam($file)
     {
-        $this->setExpectedException('\InvalidArgumentException', $expectedMessage);
-
         $reader = new Reader($file);
     }
 
@@ -106,10 +106,10 @@ final class ReaderTest extends \PHPUnit_Framework_TestCase
     {
         chmod(__DIR__ . '/_files/not_readable.csv', 0220);
         return [
-            [__DIR__ . '/_files/not_readable.csv', '$file was not readable'],
-            [true, '$file must be a string containing a full path to a delimited file'],
-            [null, '$file must be a string containing a full path to a delimited file'],
-            [__DIR__ . '/_files/doesnotexist.csv', '$file was not a valid file name'],
+            [__DIR__ . '/_files/not_readable.csv'],
+            [true],
+            [null],
+            [__DIR__ . '/_files/doesnotexist.csv'],
         ];
     }
 
