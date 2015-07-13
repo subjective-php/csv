@@ -10,7 +10,7 @@ class Reader implements \Iterator
     /**
      * The column headers.
      *
-     * @var array
+     * @var array|null
      */
     private $headers;
 
@@ -52,7 +52,7 @@ class Reader implements \Iterator
     /**
      * The current row within the csv file.
      *
-     * @var array
+     * @var array|false|null
      */
     private $current = null;
 
@@ -107,7 +107,7 @@ class Reader implements \Iterator
     public function next()
     {
         $raw = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure, $this->escapeChar);
-        if (!$raw) {
+        if (empty($raw)) {
             $this->current = false;
             return false;
         }
@@ -116,7 +116,7 @@ class Reader implements \Iterator
             //No headers given, derive from first line of file
             $this->headers = $raw;
             $raw = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure, $this->escapeChar);
-            if (!$raw) {
+            if (empty($raw)) {
                 $this->current = false;
                 return false;
             }
@@ -129,7 +129,7 @@ class Reader implements \Iterator
             //Headers given, skip first line if header line
             if ($raw === $this->headers) {
                 $raw = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure, $this->escapeChar);
-                if (!$raw) {
+                if (empty($raw)) {
                     $this->current = false;
                     return false;
                 }
