@@ -1,11 +1,19 @@
 # Chadicus\Csv
-[![Build Status](http://img.shields.io/travis/chadicus/csv-php.svg?style=flat)](https://travis-ci.org/chadicus/csv-php)
-[![Scrutinizer Code Quality](http://img.shields.io/scrutinizer/g/chadicus/csv-php.svg?style=flat)](https://scrutinizer-ci.com/g/chadicus/csv-php/)
-[![Code Coverage](http://img.shields.io/coveralls/chadicus/csv-php.svg?style=flat)](https://coveralls.io/r/chadicus/csv-php)
-[![Latest Stable Version](http://img.shields.io/packagist/v/chadicus/csv.svg?style=flat)](https://packagist.org/packages/chadicus/csv)
-[![Total Downloads](http://img.shields.io/packagist/dt/chadicus/csv.svg?style=flat)](https://packagist.org/packages/chadicus/csv)
-[![License](http://img.shields.io/packagist/l/chadicus/csv.svg?style=flat)](https://packagist.org/packages/chadicus/csv)
-[![Documentation](https://img.shields.io/badge/reference-phpdoc-blue.svg?style=flat)](http://chadicus.github.io/csv-php)
+
+[![Build Status](https://travis-ci.org/chadicus/csv-php.svg?branch=master)](https://travis-ci.org/chadicus/csv-php)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/chadicus/csv-php/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/chadicus/csv-php/?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/chadicus/csv-php/badge.svg?branch=master)](https://coveralls.io/github/chadicus/csv-php?branch=master)
+[![Dependency Status](https://www.versioneye.com/user/projects/55f77a3c3ed8940014000766/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/55f77a3c3ed8940014000766)
+
+[![Latest Stable Version](https://poser.pugx.org/chadicus/csv/v/stable)](https://packagist.org/packages/chadicus/csv)
+[![Latest Unstable Version](https://poser.pugx.org/chadicus/csv/v/unstable)](https://packagist.org/packages/chadicus/csv)
+[![License](https://poser.pugx.org/chadicus/csv/license)](https://packagist.org/packages/chadicus/csv)
+
+[![Total Downloads](https://poser.pugx.org/chadicus/csv/downloads)](https://packagist.org/packages/chadicus/csv)
+[![Monthly Downloads](https://poser.pugx.org/chadicus/csv/d/monthly)](https://packagist.org/packages/chadicus/csv)
+[![Daily Downloads](https://poser.pugx.org/chadicus/csv/d/daily)](https://packagist.org/packages/chadicus/csv)
+
+[![Documentation](https://img.shields.io/badge/reference-phpdoc-blue.svg?style=flat)](http://pholiophp.org/chadicus/csv)
 
 A collection of classes to work with delimited files
 
