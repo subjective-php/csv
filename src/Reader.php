@@ -65,6 +65,11 @@ class Reader implements \Iterator
      * @param string $delimiter  The field delimiter (one character only).
      * @param string $enclosure  The field enclosure character (one character only).
      * @param string $escapeChar The escape character (one character only).
+     *
+     * @throws \InvalidArgumentException Thrown if $file is not readable.
+     * @throws \InvalidArgumentException Thrown if $delimiter is a single character string.
+     * @throws \InvalidArgumentException Thrown if $enclosure is a single character string.
+     * @throws \InvalidArgumentException Thrown if $escapeChar is a single character string.
      */
     public function __construct($file, array $headers = null, $delimiter = ',', $enclosure = '"', $escapeChar = '\\')
     {
@@ -128,6 +133,8 @@ class Reader implements \Iterator
      * Helper method to read the next line in the delimited file.
      *
      * @return array|false
+     *
+     * @throws \Exception Thrown if no data is returned when reading the file.
      */
     private function readLine()
     {
@@ -156,7 +163,7 @@ class Reader implements \Iterator
     /**
      * Return the key of the current element.
      *
-     * @return int
+     * @return integer
      */
     public function key()
     {

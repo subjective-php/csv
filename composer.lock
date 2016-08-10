@@ -4,10 +4,47 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f2d6b5ac040a2555480e3fe3c58ae277",
-    "content-hash": "32fb8282aa70ad7af344e3fd602dc1d5",
+    "hash": "453be3dbd5b5f3e88183c570a0b800b9",
+    "content-hash": "93dc730a86a838242f25f69da6f8206d",
     "packages": [],
     "packages-dev": [
+        {
+            "name": "chadicus/coding-standard",
+            "version": "v1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/chadicus/coding-standard.git",
+                "reference": "3264851a30a7305995998660ee239d1a3d1c311f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/chadicus/coding-standard/zipball/3264851a30a7305995998660ee239d1a3d1c311f",
+                "reference": "3264851a30a7305995998660ee239d1a3d1c311f",
+                "shasum": ""
+            },
+            "require": {
+                "squizlabs/php_codesniffer": "~2.0"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chad Gray",
+                    "email": "chadwickgray@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Chadicus Coding standard",
+            "keywords": [
+                "coding",
+                "phpcs",
+                "standard"
+            ],
+            "time": "2016-08-04 18:59:29"
+        },
         {
             "name": "doctrine/instantiator",
             "version": "1.0.5",

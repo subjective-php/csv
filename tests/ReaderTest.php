@@ -24,9 +24,11 @@ final class ReaderTest extends \PHPUnit_Framework_TestCase
      * @covers ::rewind
      * @dataProvider getReaders()
      *
+     * @param Reader $reader The Reader instance to use in the test.
+     *
      * @return void
      */
-    public function basicUsage($reader)
+    public function basicUsage(Reader $reader)
     {
         $expected = [
             [
@@ -83,7 +85,7 @@ final class ReaderTest extends \PHPUnit_Framework_TestCase
     /**
      * Verify parameter checks for $file in __construct().
      *
-     * @param mixed The file parameter to check
+     * @param mixed $file The file parameter to check.
      *
      * @test
      * @covers ::__construct
@@ -170,8 +172,9 @@ final class ReaderTest extends \PHPUnit_Framework_TestCase
     public function consecutiveRewind()
     {
         $reader = new Reader(__DIR__ . '/_files/basic.csv');
-
+        $count = 0;
         foreach ($reader as $row) {
+            $count++;
         }
 
         $reader->rewind();
@@ -215,9 +218,11 @@ final class ReaderTest extends \PHPUnit_Framework_TestCase
      * @covers ::rewind
      * @dataProvider getEmptyFiles
      *
+     * @param Reader $reader The reader instance to use in the tests.
+     *
      * @return void
      */
-    public function emptyFiles($reader)
+    public function emptyFiles(Reader $reader)
     {
         $total = 0;
 
