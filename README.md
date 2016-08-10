@@ -7,13 +7,11 @@
 [![License](http://img.shields.io/packagist/l/chadicus/csv.svg?style=flat)](https://packagist.org/packages/chadicus/csv)
 [![Documentation](https://img.shields.io/badge/reference-phpdoc-blue.svg?style=flat)](http://chadicus.github.io/csv-php)
 
-
-
 A collection of classes to work with delimited files
 
 ## Requirements
 
-Chadicus\Exceptions requires PHP 5.4 (or later).
+Chadicus\Exceptions requires PHP 5.6 (or later).
 
 ##Composer
 To add the library as a local, per-project dependency use [Composer](http://getcomposer.org)! Simply add a dependency on
