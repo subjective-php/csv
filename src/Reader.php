@@ -74,7 +74,9 @@ class Reader implements \Iterator
     public function __construct($file, array $headers = null, $delimiter = ',', $enclosure = '"', $escapeChar = '\\')
     {
         if (!is_readable((string)$file)) {
-            throw new \InvalidArgumentException('$file must be a string containing a full path to a readable delimited file');
+            throw new \InvalidArgumentException(
+                '$file must be a string containing a full path to a readable delimited file'
+            );
         }
 
         if (strlen($delimiter) !== 1) {
