@@ -1,13 +1,13 @@
 <?php
-namespace ChadicusTest\Csv;
+namespace SubjectivePHPTest\Csv;
 
-use Chadicus\Csv\Reader;
+use SubjectivePHP\Csv\Reader;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unit tests for the Chadicus\Csv\Reader class
+ * Unit tests for the SubjectivePHP\Csv\Reader class
  *
- * @coversDefaultClass \Chadicus\Csv\Reader
+ * @coversDefaultClass \SubjectivePHP\Csv\Reader
  * @covers ::__construct
  * @covers ::__destruct
  * @covers ::<private>

@@ -1,6 +1,6 @@
 <?php
 
-namespace Chadicus\Csv;
+namespace SubjectivePHP\Csv;
 
 /**
  * Simple class for reading delimited data files
