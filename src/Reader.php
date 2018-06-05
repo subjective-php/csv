@@ -2,6 +2,8 @@
 
 namespace SubjectivePHP\Csv;
 
+use SplFileObject;
+
 /**
  * Simple class for reading delimited data files
  */
@@ -13,34 +15,6 @@ class Reader implements \Iterator
      * @var array|null
      */
     private $headers;
-
-    /**
-     * The field delimiter (one character only).
-     *
-     * @var string
-     */
-    private $delimiter;
-
-    /**
-     *  The field enclosure character (one character only).
-     *
-     * @var string
-     */
-    private $enclosure;
-
-    /**
-     * The escape character (one character only).
-     *
-     * @var string
-     */
-    private $escapeChar;
-
-    /**
-     * File pointer to the csv file.
-     *
-     * @var resource
-     */
-    private $handle;
 
     /**
      * The current file pointer position.
@@ -55,6 +29,11 @@ class Reader implements \Iterator
      * @var array|false|null
      */
     private $current = null;
+
+    /**
+     * @var SplFileObject
+     */
+    private $fileObject;
 
     /**
      * Create a new Reader instance.
@@ -97,10 +76,9 @@ class Reader implements \Iterator
         }
 
         $this->headers = $headers;
-        $this->delimiter = $delimiter;
-        $this->enclosure = $enclosure;
-        $this->escapeChar = $escapeChar;
-        $this->handle = fopen($file, 'r');
+        $this->fileObject = new SplFileObject($file);
+        $this->fileObject->setFlags(SplFileObject::READ_CSV);
+        $this->fileObject->setCsvControl($delimiter, $enclosure, $escapeChar);
     }
 
     /**
@@ -145,7 +123,7 @@ class Reader implements \Iterator
      */
     private function readLine()
     {
-        $raw = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure, $this->escapeChar);
+        $raw = $this->fileObject->fgetcsv();
         if (empty($raw)) {
             throw new \Exception('Empty line read');
         }
@@ -184,7 +162,7 @@ class Reader implements \Iterator
      */
     public function rewind()
     {
-        rewind($this->handle);
+        $this->fileObject->rewind();
         $this->position = 0;
         $this->current = null;
     }
@@ -200,7 +178,7 @@ class Reader implements \Iterator
             $this->next();
         }
 
-        return !feof($this->handle) && $this->current !== false;
+        return !$this->fileObject->eof() && $this->current !== false;
     }
 
     /**
@@ -210,8 +188,6 @@ class Reader implements \Iterator
      */
     public function __destruct()
     {
-        if (is_resource($this->handle)) {
-            fclose($this->handle);
-        }
+        $this->fileObject = null;
     }
 }
