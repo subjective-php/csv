@@ -2,6 +2,7 @@
 namespace ChadicusTest\Csv;
 
 use Chadicus\Csv\Reader;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for the Chadicus\Csv\Reader class
@@ -11,7 +12,7 @@ use Chadicus\Csv\Reader;
  * @covers ::__destruct
  * @covers ::<private>
  */
-final class ReaderTest extends \PHPUnit_Framework_TestCase
+final class ReaderTest extends TestCase
 {
     /**
      * Verify basic usage of Reader.
