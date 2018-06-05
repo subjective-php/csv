@@ -111,8 +111,6 @@ final class ReaderTest extends TestCase
         chmod(__DIR__ . '/_files/not_readable.csv', 0220);
         return [
             [__DIR__ . '/_files/not_readable.csv'],
-            [true],
-            [null],
             [__DIR__ . '/_files/doesnotexist.csv'],
         ];
     }
@@ -144,7 +142,7 @@ final class ReaderTest extends TestCase
      */
     public function constructInvalidEnclosure()
     {
-        new Reader(__DIR__ . '/_files/basic.csv', null, ',', 123);
+        new Reader(__DIR__ . '/_files/basic.csv', null, ',', '"""');
     }
 
     /**
@@ -159,7 +157,7 @@ final class ReaderTest extends TestCase
      */
     public function constructInvalidEscapeChar()
     {
-        new Reader(__DIR__ . '/_files/basic.csv', null, ',', '"', null);
+        new Reader(__DIR__ . '/_files/basic.csv', null, ',', '"', 'abc');
     }
 
     /**

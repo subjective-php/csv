@@ -71,9 +71,14 @@ class Reader implements \Iterator
      * @throws \InvalidArgumentException Thrown if $enclosure is a single character string.
      * @throws \InvalidArgumentException Thrown if $escapeChar is a single character string.
      */
-    public function __construct($file, array $headers = null, $delimiter = ',', $enclosure = '"', $escapeChar = '\\')
-    {
-        if (!is_readable((string)$file)) {
+    public function __construct(
+        string $file,
+        array $headers = null,
+        string $delimiter = ',',
+        string $enclosure = '"',
+        string $escapeChar = '\\'
+    ) {
+        if (!is_readable($file)) {
             throw new \InvalidArgumentException(
                 '$file must be a string containing a full path to a readable delimited file'
             );
@@ -95,7 +100,7 @@ class Reader implements \Iterator
         $this->delimiter = $delimiter;
         $this->enclosure = $enclosure;
         $this->escapeChar = $escapeChar;
-        $this->handle = fopen((string)$file, 'r');
+        $this->handle = fopen($file, 'r');
     }
 
     /**
