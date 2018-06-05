@@ -81,6 +81,11 @@ class Reader implements \Iterator
         $this->fileObject->setCsvControl($delimiter, $enclosure, $escapeChar);
     }
 
+    public function getFilePath() : string
+    {
+        return $this->fileObject->getRealPath();
+    }
+
     /**
      * Advances to the next row in this csv reader
      *

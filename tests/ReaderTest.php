@@ -248,4 +248,14 @@ final class ReaderTest extends TestCase
             [new Reader(__DIR__ . '/_files/headers_only.csv', $headers)],
         ];
     }
+
+    /**
+     * @test
+     * @covers ::getFilePath
+     */
+    public function getFilePath()
+    {
+         $reader = new Reader(__DIR__ . '/_files/basic.csv');
+         $this->assertSame(__DIR__ . '/_files/basic.csv', $reader->getFilePath());
+    }
 }
