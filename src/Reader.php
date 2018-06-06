@@ -50,35 +50,19 @@ class Reader implements \Iterator
      * @throws \InvalidArgumentException Thrown if $enclosure is a single character string.
      * @throws \InvalidArgumentException Thrown if $escapeChar is a single character string.
      */
-    public function __construct(
-        string $file,
-        array $headers = null,
-        string $delimiter = ',',
-        string $enclosure = '"',
-        string $escapeChar = '\\'
-    ) {
+    public function __construct(string $file, array $headers = null, CsvOptions $options = null)
+    {
         if (!is_readable($file)) {
             throw new \InvalidArgumentException(
                 '$file must be a string containing a full path to a readable delimited file'
             );
         }
 
-        if (strlen($delimiter) !== 1) {
-            throw new \InvalidArgumentException('$delimiter must be a single character string');
-        }
-
-        if (strlen($enclosure) !== 1) {
-            throw new \InvalidArgumentException('$enclosure must be a single character string');
-        }
-
-        if (strlen($escapeChar) !== 1) {
-            throw new \InvalidArgumentException('$escapeChar must be a single character string');
-        }
-
         $this->headers = $headers;
+        $options = $options ?? new CsvOptions();
         $this->fileObject = new SplFileObject($file);
         $this->fileObject->setFlags(SplFileObject::READ_CSV);
-        $this->fileObject->setCsvControl($delimiter, $enclosure, $escapeChar);
+        $this->fileObject->setCsvControl($options->getDelimiter(), $options->getEnclosure(), $options->getEscapeChar());
     }
 
     public function getFilePath() : string

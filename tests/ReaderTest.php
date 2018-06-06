@@ -1,6 +1,7 @@
 <?php
 namespace SubjectivePHPTest\Csv;
 
+use SubjectivePHP\Csv\CsvOptions;
 use SubjectivePHP\Csv\Reader;
 use PHPUnit\Framework\TestCase;
 
@@ -14,6 +15,46 @@ use PHPUnit\Framework\TestCase;
  */
 final class ReaderTest extends TestCase
 {
+    /**
+     */
+    public function readerCreatesNumericHeadersIfNoneGiven()
+    {
+        $reader = new Reader(__DIR__ . '/_files/no_headers.csv', new CsvOptions());
+        $expected = [
+            [
+                'bk101',
+                'Gambardella, Matthew',
+                'XML Developer\'s Guide',
+                'Computer',
+                '44.95',
+                '2000-10-01',
+                'An in-depth look at creating applications with XML.',
+            ],
+            [
+                'bk102',
+                'Ralls, Kim',
+                'Midnight Rain',
+                'Fantasy',
+                '5.95',
+                '2000-12-16',
+                'A former architect battles corporate zombies and an evil sorceress.',
+            ],
+            [
+                'bk103',
+                'Corets, Eva',
+                'Maeve Ascendant',
+                'Fantasy',
+                '5.95',
+                '2000-11-17',
+                'Young survivors lay the foundation for a new society in England.',
+            ],
+        ];
+
+        foreach ($reader as $key => $row) {
+            $this->assertSame($expected[$key], $row);
+        }
+    }
+
     /**
      * Verify basic usage of Reader.
      *
@@ -78,8 +119,8 @@ final class ReaderTest extends TestCase
             [new Reader(__DIR__ . '/_files/basic.csv')],
             [new Reader(__DIR__ . '/_files/basic.csv', $headers)],
             [new Reader(__DIR__ . '/_files/no_headers.csv', $headers)],
-            [new Reader(__DIR__ . '/_files/pipe_delimited.txt', $headers, '|')],
-            [new Reader(__DIR__ . '/_files/tab_delimited.txt', $headers, "\t")],
+            [new Reader(__DIR__ . '/_files/pipe_delimited.txt', $headers, new CsvOptions('|'))],
+            [new Reader(__DIR__ . '/_files/tab_delimited.txt', $headers, new CsvOptions("\t"))],
         ];
     }
 
@@ -113,51 +154,6 @@ final class ReaderTest extends TestCase
             [__DIR__ . '/_files/not_readable.csv'],
             [__DIR__ . '/_files/doesnotexist.csv'],
         ];
-    }
-
-    /**
-     * Verify behavior of __construct with an invalid delimiter.
-     *
-     * @test
-     * @covers ::__construct
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $delimiter must be a single character string
-     *
-     * @return void
-     */
-    public function constructInvalidDelimiter()
-    {
-        new Reader(__DIR__ . '/_files/basic.csv', null, 'too long');
-    }
-
-    /**
-     * Verify behavior of __construct with an invalid enclosure.
-     *
-     * @test
-     * @covers ::__construct
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $enclosure must be a single character string
-     *
-     * @return void
-     */
-    public function constructInvalidEnclosure()
-    {
-        new Reader(__DIR__ . '/_files/basic.csv', null, ',', '"""');
-    }
-
-    /**
-     * Verify behavior of __construct with an invalid escapeChar.
-     *
-     * @test
-     * @covers ::__construct
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $escapeChar must be a single character string
-     *
-     * @return void
-     */
-    public function constructInvalidEscapeChar()
-    {
-        new Reader(__DIR__ . '/_files/basic.csv', null, ',', '"', 'abc');
     }
 
     /**
