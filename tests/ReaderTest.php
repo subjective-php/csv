@@ -1,18 +1,60 @@
 <?php
-namespace ChadicusTest\Csv;
+namespace SubjectivePHPTest\Csv;
 
-use Chadicus\Csv\Reader;
+use SubjectivePHP\Csv\CsvOptions;
+use SubjectivePHP\Csv\Reader;
+use PHPUnit\Framework\TestCase;
 
 /**
- * Unit tests for the Chadicus\Csv\Reader class
+ * Unit tests for the SubjectivePHP\Csv\Reader class
  *
- * @coversDefaultClass \Chadicus\Csv\Reader
+ * @coversDefaultClass \SubjectivePHP\Csv\Reader
  * @covers ::__construct
  * @covers ::__destruct
  * @covers ::<private>
  */
-final class ReaderTest extends \PHPUnit_Framework_TestCase
+final class ReaderTest extends TestCase
 {
+    /**
+     */
+    public function readerCreatesNumericHeadersIfNoneGiven()
+    {
+        $reader = new Reader(__DIR__ . '/_files/no_headers.csv', new CsvOptions());
+        $expected = [
+            [
+                'bk101',
+                'Gambardella, Matthew',
+                'XML Developer\'s Guide',
+                'Computer',
+                '44.95',
+                '2000-10-01',
+                'An in-depth look at creating applications with XML.',
+            ],
+            [
+                'bk102',
+                'Ralls, Kim',
+                'Midnight Rain',
+                'Fantasy',
+                '5.95',
+                '2000-12-16',
+                'A former architect battles corporate zombies and an evil sorceress.',
+            ],
+            [
+                'bk103',
+                'Corets, Eva',
+                'Maeve Ascendant',
+                'Fantasy',
+                '5.95',
+                '2000-11-17',
+                'Young survivors lay the foundation for a new society in England.',
+            ],
+        ];
+
+        foreach ($reader as $key => $row) {
+            $this->assertSame($expected[$key], $row);
+        }
+    }
+
     /**
      * Verify basic usage of Reader.
      *
@@ -77,8 +119,8 @@ final class ReaderTest extends \PHPUnit_Framework_TestCase
             [new Reader(__DIR__ . '/_files/basic.csv')],
             [new Reader(__DIR__ . '/_files/basic.csv', $headers)],
             [new Reader(__DIR__ . '/_files/no_headers.csv', $headers)],
-            [new Reader(__DIR__ . '/_files/pipe_delimited.txt', $headers, '|')],
-            [new Reader(__DIR__ . '/_files/tab_delimited.txt', $headers, "\t")],
+            [new Reader(__DIR__ . '/_files/pipe_delimited.txt', $headers, new CsvOptions('|'))],
+            [new Reader(__DIR__ . '/_files/tab_delimited.txt', $headers, new CsvOptions("\t"))],
         ];
     }
 
@@ -110,55 +152,8 @@ final class ReaderTest extends \PHPUnit_Framework_TestCase
         chmod(__DIR__ . '/_files/not_readable.csv', 0220);
         return [
             [__DIR__ . '/_files/not_readable.csv'],
-            [true],
-            [null],
             [__DIR__ . '/_files/doesnotexist.csv'],
         ];
-    }
-
-    /**
-     * Verify behavior of __construct with an invalid delimiter.
-     *
-     * @test
-     * @covers ::__construct
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $delimiter must be a single character string
-     *
-     * @return void
-     */
-    public function constructInvalidDelimiter()
-    {
-        new Reader(__DIR__ . '/_files/basic.csv', null, 'too long');
-    }
-
-    /**
-     * Verify behavior of __construct with an invalid enclosure.
-     *
-     * @test
-     * @covers ::__construct
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $enclosure must be a single character string
-     *
-     * @return void
-     */
-    public function constructInvalidEnclosure()
-    {
-        new Reader(__DIR__ . '/_files/basic.csv', null, ',', 123);
-    }
-
-    /**
-     * Verify behavior of __construct with an invalid escapeChar.
-     *
-     * @test
-     * @covers ::__construct
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $escapeChar must be a single character string
-     *
-     * @return void
-     */
-    public function constructInvalidEscapeChar()
-    {
-        new Reader(__DIR__ . '/_files/basic.csv', null, ',', '"', null);
     }
 
     /**
@@ -248,5 +243,15 @@ final class ReaderTest extends \PHPUnit_Framework_TestCase
             [new Reader(__DIR__ . '/_files/headers_only.csv')],
             [new Reader(__DIR__ . '/_files/headers_only.csv', $headers)],
         ];
+    }
+
+    /**
+     * @test
+     * @covers ::getFilePath
+     */
+    public function getFilePath()
+    {
+         $reader = new Reader(__DIR__ . '/_files/basic.csv');
+         $this->assertSame(__DIR__ . '/_files/basic.csv', $reader->getFilePath());
     }
 }

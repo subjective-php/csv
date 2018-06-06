@@ -1,6 +1,8 @@
 <?php
 
-namespace Chadicus\Csv;
+namespace SubjectivePHP\Csv;
+
+use SplFileObject;
 
 /**
  * Simple class for reading delimited data files
@@ -13,34 +15,6 @@ class Reader implements \Iterator
      * @var array|null
      */
     private $headers;
-
-    /**
-     * The field delimiter (one character only).
-     *
-     * @var string
-     */
-    private $delimiter;
-
-    /**
-     *  The field enclosure character (one character only).
-     *
-     * @var string
-     */
-    private $enclosure;
-
-    /**
-     * The escape character (one character only).
-     *
-     * @var string
-     */
-    private $escapeChar;
-
-    /**
-     * File pointer to the csv file.
-     *
-     * @var resource
-     */
-    private $handle;
 
     /**
      * The current file pointer position.
@@ -57,6 +31,11 @@ class Reader implements \Iterator
     private $current = null;
 
     /**
+     * @var SplFileObject
+     */
+    private $fileObject;
+
+    /**
      * Create a new Reader instance.
      *
      * @param string $file       The full path to the csv file.
@@ -71,31 +50,24 @@ class Reader implements \Iterator
      * @throws \InvalidArgumentException Thrown if $enclosure is a single character string.
      * @throws \InvalidArgumentException Thrown if $escapeChar is a single character string.
      */
-    public function __construct($file, array $headers = null, $delimiter = ',', $enclosure = '"', $escapeChar = '\\')
+    public function __construct(string $file, array $headers = null, CsvOptions $options = null)
     {
-        if (!is_readable((string)$file)) {
+        if (!is_readable($file)) {
             throw new \InvalidArgumentException(
                 '$file must be a string containing a full path to a readable delimited file'
             );
         }
 
-        if (strlen($delimiter) !== 1) {
-            throw new \InvalidArgumentException('$delimiter must be a single character string');
-        }
-
-        if (strlen($enclosure) !== 1) {
-            throw new \InvalidArgumentException('$enclosure must be a single character string');
-        }
-
-        if (strlen($escapeChar) !== 1) {
-            throw new \InvalidArgumentException('$escapeChar must be a single character string');
-        }
-
         $this->headers = $headers;
-        $this->delimiter = $delimiter;
-        $this->enclosure = $enclosure;
-        $this->escapeChar = $escapeChar;
-        $this->handle = fopen((string)$file, 'r');
+        $options = $options ?? new CsvOptions();
+        $this->fileObject = new SplFileObject($file);
+        $this->fileObject->setFlags(SplFileObject::READ_CSV);
+        $this->fileObject->setCsvControl($options->getDelimiter(), $options->getEnclosure(), $options->getEscapeChar());
+    }
+
+    public function getFilePath() : string
+    {
+        return $this->fileObject->getRealPath();
     }
 
     /**
@@ -140,7 +112,7 @@ class Reader implements \Iterator
      */
     private function readLine()
     {
-        $raw = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure, $this->escapeChar);
+        $raw = $this->fileObject->fgetcsv();
         if (empty($raw)) {
             throw new \Exception('Empty line read');
         }
@@ -179,7 +151,7 @@ class Reader implements \Iterator
      */
     public function rewind()
     {
-        rewind($this->handle);
+        $this->fileObject->rewind();
         $this->position = 0;
         $this->current = null;
     }
@@ -195,7 +167,7 @@ class Reader implements \Iterator
             $this->next();
         }
 
-        return !feof($this->handle) && $this->current !== false;
+        return !$this->fileObject->eof() && $this->current !== false;
     }
 
     /**
@@ -205,8 +177,6 @@ class Reader implements \Iterator
      */
     public function __destruct()
     {
-        if (is_resource($this->handle)) {
-            fclose($this->handle);
-        }
+        $this->fileObject = null;
     }
 }

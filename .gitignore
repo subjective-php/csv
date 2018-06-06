@@ -1,2 +1,5 @@
 /vendor/
 clover.xml
+composer.lock
+phpcs.xml
+phpunit.xml
