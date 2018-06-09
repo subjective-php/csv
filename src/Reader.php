@@ -36,6 +36,11 @@ class Reader implements \Iterator
     private $fileObject;
 
     /**
+     * @var HeaderStrategyInterface
+     */
+    private $headerStrategy;
+
+    /**
      * Create a new Reader instance.
      *
      * @param string                  $file           The full path to the csv file.
@@ -53,7 +58,7 @@ class Reader implements \Iterator
         }
 
         $csvOptions = $csvOptions ?? new CsvOptions();
-        $headerStrategy = $headerStrategy ?? new DeriveHeaderStrategy();
+        $this->headerStrategy = $headerStrategy ?? new DeriveHeaderStrategy();
 
         $this->fileObject = new SplFileObject($file);
         $this->fileObject->setFlags(SplFileObject::READ_CSV);
@@ -63,7 +68,7 @@ class Reader implements \Iterator
             $csvOptions->getEscapeChar()
         );
 
-        $this->headers = $headerStrategy->getHeaders($this->fileObject);
+        $this->headers = $this->headerStrategy->getHeaders($this->fileObject);
     }
 
     /**
@@ -81,7 +86,7 @@ class Reader implements \Iterator
             }
 
             //Headers given, skip first line if header line
-            if ($raw === $this->headers) {
+            if ($this->headerStrategy->isHeaderRow($raw)) {
                 $raw = $this->readLine();
             }
 
