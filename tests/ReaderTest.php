@@ -189,8 +189,6 @@ final class ReaderTest extends TestCase
     /**
      * Verify parameter checks for $file in __construct().
      *
-     * @param mixed $file The file parameter to check.
-     *
      * @test
      * @covers ::__construct
      * @expectedException \InvalidArgumentException
