@@ -23,13 +23,7 @@ final class HeaderStrategy implements HeaderStrategyInterface
      */
     public static function derive() : HeaderStrategyInterface
     {
-        return new self(
-            function (SplFileObject $fileObject) : array {
-                $row = $fileObject->fgetcsv();
-                $fileObject->rewind();
-                return $row;
-            }
-        );
+        return new DeriveHeaderStrategy();
     }
 
     /**
