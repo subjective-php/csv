@@ -9,6 +9,9 @@
             "role": "Developer"
         }
     ],
+    "config": {
+        "sort-packages": true
+    },
     "license": "MIT",
     "require": {
         "php": "^7.0"
