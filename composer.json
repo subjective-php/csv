@@ -1,5 +1,5 @@
 {
-    "name": "chadicus/csv",
+    "name": "subjective-php/csv",
     "description": "Collection of classes to work with csv files",
     "keywords": ["csv", "delimited", "file", "io"],
     "config": {
