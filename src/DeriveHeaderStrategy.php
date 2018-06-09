@@ -23,7 +23,7 @@ final class DeriveHeaderStrategy implements HeaderStrategyInterface
      */
     public function getHeaders(SplFileObject $fileObject) : array
     {
-        $this->headers = $fileObject->fgetcsv();
+        $this->headers = $fileObject->fgetcsv() ?? [];
         $fileObject->rewind();
         return $this->headers;
     }
