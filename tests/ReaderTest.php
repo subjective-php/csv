@@ -2,6 +2,7 @@
 namespace ChadicusTest\Csv;
 
 use Chadicus\Csv\Reader;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unit tests for the Chadicus\Csv\Reader class
@@ -11,8 +12,22 @@ use Chadicus\Csv\Reader;
  * @covers ::__destruct
  * @covers ::<private>
  */
-final class ReaderTest extends \PHPUnit_Framework_TestCase
+final class ReaderTest extends TestCase
 {
+    private $unreadableFilePath;
+
+    public function setUp()
+    {
+        $this->unreadableFilePath = tempnam(sys_get_temp_dir(), 'csv');
+        touch($this->unreadableFilePath);
+        chmod($this->unreadableFilePath, 0220);
+    }
+
+    public function tearDown()
+    {
+        unlink($this->unreadableFilePath);
+    }
+
     /**
      * Verify basic usage of Reader.
      *
@@ -107,7 +122,6 @@ final class ReaderTest extends \PHPUnit_Framework_TestCase
      */
     public function getFiles()
     {
-        chmod(__DIR__ . '/_files/not_readable.csv', 0220);
         return [
             [__DIR__ . '/_files/not_readable.csv'],
             [true],
