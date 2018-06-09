@@ -9,4 +9,6 @@ interface HeaderStrategyInterface
     public function getHeaders(SplFileObject $fileObject) : array;
 
     public function isHeaderRow(array $row) : bool;
+
+    public function createDataRow(array $row) : array;
 }

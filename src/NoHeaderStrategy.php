@@ -21,4 +21,9 @@ final class NoHeaderStrategy implements HeaderStrategyInterface
     {
         return false;
     }
+
+    public function createDataRow(array $row) : array
+    {
+        return $row;
+    }
 }

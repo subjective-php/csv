@@ -28,4 +28,9 @@ final class ProvidedHeaderStrategy implements HeaderStrategyInterface
     {
         return $row === $this->headers;
     }
+
+    public function createDataRow(array $row) : array
+    {
+        return array_combine($this->headers, $row);
+    }
 }
