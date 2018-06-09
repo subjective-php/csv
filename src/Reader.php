@@ -15,27 +15,6 @@ class Reader implements \Iterator
     private $headers;
 
     /**
-     * The field delimiter (one character only).
-     *
-     * @var string
-     */
-    private $delimiter;
-
-    /**
-     *  The field enclosure character (one character only).
-     *
-     * @var string
-     */
-    private $enclosure;
-
-    /**
-     * The escape character (one character only).
-     *
-     * @var string
-     */
-    private $escapeChar;
-
-    /**
      * File pointer to the csv file.
      *
      * @var resource
@@ -57,21 +36,21 @@ class Reader implements \Iterator
     private $current = null;
 
     /**
+     * @var CsvOptions
+     */
+    private $csvOptions;
+
+    /**
      * Create a new Reader instance.
      *
-     * @param string $file       The full path to the csv file.
-     * @param array  $headers    The column headers. If null, the headers will be derived from the first line in the
-     *                           file.
-     * @param string $delimiter  The field delimiter (one character only).
-     * @param string $enclosure  The field enclosure character (one character only).
-     * @param string $escapeChar The escape character (one character only).
+     * @param string $file           The full path to the csv file.
+     * @param array  $headers        The column headers. If null, the headers will be derived from the first line in
+     *                               the file.
+     * @param CsvOptions $csvOptions Options for the csv file.
      *
      * @throws \InvalidArgumentException Thrown if $file is not readable.
-     * @throws \InvalidArgumentException Thrown if $delimiter is a single character string.
-     * @throws \InvalidArgumentException Thrown if $enclosure is a single character string.
-     * @throws \InvalidArgumentException Thrown if $escapeChar is a single character string.
      */
-    public function __construct($file, array $headers = null, $delimiter = ',', $enclosure = '"', $escapeChar = '\\')
+    public function __construct($file, array $headers = null, CsvOptions $csvOptions = null)
     {
         if (!is_readable((string)$file)) {
             throw new \InvalidArgumentException(
@@ -79,22 +58,9 @@ class Reader implements \Iterator
             );
         }
 
-        if (strlen($delimiter) !== 1) {
-            throw new \InvalidArgumentException('$delimiter must be a single character string');
-        }
-
-        if (strlen($enclosure) !== 1) {
-            throw new \InvalidArgumentException('$enclosure must be a single character string');
-        }
-
-        if (strlen($escapeChar) !== 1) {
-            throw new \InvalidArgumentException('$escapeChar must be a single character string');
-        }
+        $this->csvOptions = $csvOptions ?? new CsvOptions();
 
         $this->headers = $headers;
-        $this->delimiter = $delimiter;
-        $this->enclosure = $enclosure;
-        $this->escapeChar = $escapeChar;
         $this->handle = fopen((string)$file, 'r');
     }
 
@@ -140,7 +106,13 @@ class Reader implements \Iterator
      */
     private function readLine()
     {
-        $raw = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure, $this->escapeChar);
+        $raw = fgetcsv(
+            $this->handle,
+            0,
+            $this->csvOptions->getDelimiter(),
+            $this->csvOptions->getEnclosure(),
+            $this->csvOptions->getEscapeChar()
+        );
         if (empty($raw)) {
             throw new \Exception('Empty line read');
         }

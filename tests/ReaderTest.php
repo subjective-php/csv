@@ -1,6 +1,7 @@
 <?php
 namespace SubjectivePHPTest\Csv;
 
+use SubjectivePHP\Csv\CsvOptions;
 use SubjectivePHP\Csv\Reader;
 use PHPUnit\Framework\TestCase;
 
@@ -92,8 +93,8 @@ final class ReaderTest extends TestCase
             [new Reader(__DIR__ . '/_files/basic.csv')],
             [new Reader(__DIR__ . '/_files/basic.csv', $headers)],
             [new Reader(__DIR__ . '/_files/no_headers.csv', $headers)],
-            [new Reader(__DIR__ . '/_files/pipe_delimited.txt', $headers, '|')],
-            [new Reader(__DIR__ . '/_files/tab_delimited.txt', $headers, "\t")],
+            [new Reader(__DIR__ . '/_files/pipe_delimited.txt', $headers, new CsvOptions('|'))],
+            [new Reader(__DIR__ . '/_files/tab_delimited.txt', $headers, new CsvOptions("\t"))],
         ];
     }
 
@@ -128,51 +129,6 @@ final class ReaderTest extends TestCase
             [null],
             [__DIR__ . '/_files/doesnotexist.csv'],
         ];
-    }
-
-    /**
-     * Verify behavior of __construct with an invalid delimiter.
-     *
-     * @test
-     * @covers ::__construct
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $delimiter must be a single character string
-     *
-     * @return void
-     */
-    public function constructInvalidDelimiter()
-    {
-        new Reader(__DIR__ . '/_files/basic.csv', null, 'too long');
-    }
-
-    /**
-     * Verify behavior of __construct with an invalid enclosure.
-     *
-     * @test
-     * @covers ::__construct
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $enclosure must be a single character string
-     *
-     * @return void
-     */
-    public function constructInvalidEnclosure()
-    {
-        new Reader(__DIR__ . '/_files/basic.csv', null, ',', 123);
-    }
-
-    /**
-     * Verify behavior of __construct with an invalid escapeChar.
-     *
-     * @test
-     * @covers ::__construct
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $escapeChar must be a single character string
-     *
-     * @return void
-     */
-    public function constructInvalidEscapeChar()
-    {
-        new Reader(__DIR__ . '/_files/basic.csv', null, ',', '"', null);
     }
 
     /**
