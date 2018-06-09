@@ -2,7 +2,9 @@
 namespace SubjectivePHPTest\Csv;
 
 use SubjectivePHP\Csv\CsvOptions;
-use SubjectivePHP\Csv\HeaderStrategy;
+use SubjectivePHP\Csv\DeriveHeaderStrategy;
+use SubjectivePHP\Csv\NoHeaderStrategy;
+use SubjectivePHP\Csv\ProvidedHeaderStrategy;
 use SubjectivePHP\Csv\Reader;
 use PHPUnit\Framework\TestCase;
 
@@ -117,7 +119,7 @@ final class ReaderTest extends TestCase
             ],
         ];
 
-        $reader = new Reader(__DIR__ . '/_files/no_headers.csv', HeaderStrategy::none());
+        $reader = new Reader(__DIR__ . '/_files/no_headers.csv', new NoHeaderStrategy());
         foreach ($reader as $key => $row) {
             $this->assertSame($expected[$key], $row);
         }
@@ -133,19 +135,19 @@ final class ReaderTest extends TestCase
         $headers = ['id', 'author', 'title', 'genre', 'price', 'publish_date', 'description'];
         return [
             [new Reader(__DIR__ . '/_files/basic.csv')],
-            [new Reader(__DIR__ . '/_files/basic.csv', HeaderStrategy::provide($headers))],
-            [new Reader(__DIR__ . '/_files/no_headers.csv', HeaderStrategy::provide($headers))],
+            [new Reader(__DIR__ . '/_files/basic.csv', new ProvidedHeaderStrategy($headers))],
+            [new Reader(__DIR__ . '/_files/no_headers.csv', new ProvidedHeaderStrategy($headers))],
             [
                 new Reader(
                     __DIR__ . '/_files/pipe_delimited.txt',
-                    HeaderStrategy::provide($headers),
+                    new ProvidedHeaderStrategy($headers),
                     new CsvOptions('|')
                 )
             ],
             [
                 new Reader(
                     __DIR__ . '/_files/tab_delimited.txt',
-                    HeaderStrategy::provide($headers),
+                    new ProvidedHeaderStrategy($headers),
                     new CsvOptions("\t")
                 )
             ],
@@ -270,7 +272,7 @@ final class ReaderTest extends TestCase
         return [
             [new Reader(__DIR__ . '/_files/empty.csv')],
             [new Reader(__DIR__ . '/_files/headers_only.csv')],
-            [new Reader(__DIR__ . '/_files/headers_only.csv', HeaderStrategy::provide($headers))],
+            [new Reader(__DIR__ . '/_files/headers_only.csv', new ProvidedHeaderStrategy($headers))],
         ];
     }
 }

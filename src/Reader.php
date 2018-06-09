@@ -53,7 +53,7 @@ class Reader implements \Iterator
         }
 
         $csvOptions = $csvOptions ?? new CsvOptions();
-        $headerStrategy = $headerStrategy ?? HeaderStrategy::derive();
+        $headerStrategy = $headerStrategy ?? new DeriveHeaderStrategy();
 
         $this->fileObject = new SplFileObject($file);
         $this->fileObject->setFlags(SplFileObject::READ_CSV);
