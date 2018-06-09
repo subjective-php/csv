@@ -50,6 +50,30 @@ final class DeriveHeaderStrategyTest extends TestCase
         $this->assertFalse($strategy->isHeaderRow($fileObject->fgetcsv()));
     }
 
+    /**
+     * @test
+     * @covers ::createDataRow
+     */
+    public function createDataRow()
+    {
+        $fileObject = $this->getFileObject();
+        $strategy = new DeriveHeaderStrategy();
+        $strategy->getHeaders($fileObject);
+        $fileObject->fgetcsv();//skip header line
+        $this->assertSame(
+            [
+                'id' => 'bk101',
+                'author' => 'Gambardella, Matthew',
+                'title' => 'XML Developer\'s Guide',
+                'genre' => 'Computer',
+                'price' => '44.95',
+                'publish_date' => '2000-10-01',
+                'description' => 'An in-depth look at creating applications with XML.',
+            ],
+            $strategy->createDataRow($fileObject->fgetcsv())
+        );
+    }
+
     private function getFileObject() : SplFileObject
     {
         $fileObject = new SplFileObject(__DIR__ . '/_files/pipe_delimited.txt');

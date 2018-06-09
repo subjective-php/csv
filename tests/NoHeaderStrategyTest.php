@@ -40,4 +40,35 @@ final class NoHeaderStrategyTest extends TestCase
         $this->assertFalse($strategy->isHeaderRow($fileObject->fgetcsv()));
         $this->assertFalse($strategy->isHeaderRow($fileObject->fgetcsv()));
     }
+
+    /**
+     * @test
+     * @covers ::createDataRow
+     */
+    public function createDataRow()
+    {
+        $row = [
+            'bk101',
+            'Gambardella, Matthew',
+            'XML Developer\'s Guide',
+            'Computer',
+            '44.95',
+            '2000-10-01',
+            'An in-depth look at creating applications with XML.',
+        ];
+        $strategy = new NoHeaderStrategy();
+        $this->assertSame(
+            [
+                'bk101',
+                'Gambardella, Matthew',
+                'XML Developer\'s Guide',
+                'Computer',
+                '44.95',
+                '2000-10-01',
+                'An in-depth look at creating applications with XML.',
+            ],
+            $strategy->createDataRow($row)
+        );
+    }
+
 }

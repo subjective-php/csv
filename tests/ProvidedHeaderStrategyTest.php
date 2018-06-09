@@ -47,6 +47,36 @@ final class ProvidedHeaderStrategyTest extends TestCase
         $this->assertFalse($strategy->isHeaderRow($fileObject->fgetcsv()));
     }
 
+    /**
+     * @test
+     * @covers ::createDataRow
+     */
+    public function createDataRow()
+    {
+        $row = [
+            'bk101',
+            'Gambardella, Matthew',
+            'XML Developer\'s Guide',
+            'Computer',
+            '44.95',
+            '2000-10-01',
+            'An in-depth look at creating applications with XML.',
+        ];
+        $strategy = $this->getStrategy();
+        $this->assertSame(
+            [
+                'id' => 'bk101',
+                'author' => 'Gambardella, Matthew',
+                'title' => 'XML Developer\'s Guide',
+                'genre' => 'Computer',
+                'price' => '44.95',
+                'publish_date' => '2000-10-01',
+                'description' => 'An in-depth look at creating applications with XML.',
+            ],
+            $strategy->createDataRow($row)
+        );
+    }
+
     private function getFileObject() : SplFileObject
     {
         $fileObject = new SplFileObject(__DIR__ . '/_files/basic.csv');
