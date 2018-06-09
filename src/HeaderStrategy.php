@@ -47,14 +47,7 @@ final class HeaderStrategy implements HeaderStrategyInterface
      */
     public static function none() : HeaderStrategyInterface
     {
-        return new self(
-            function (SplFileObject $fileObject) : array {
-                $firstRow = $fileObject->fgetcsv();
-                $headers = array_keys($firstRow);
-                $fileObject->rewind();
-                return $headers;
-            }
-        );
+        return new NoHeaderStrategy();
     }
 
     /**
