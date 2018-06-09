@@ -19,29 +19,11 @@ use PHPUnit\Framework\TestCase;
  */
 final class ReaderTest extends TestCase
 {
-    private $unreadableFilePath;
-
-    public function setUp()
-    {
-        $this->unreadableFilePath = tempnam(sys_get_temp_dir(), 'csv');
-        touch($this->unreadableFilePath);
-        chmod($this->unreadableFilePath, 0220);
-    }
-
-    public function tearDown()
-    {
-        unlink($this->unreadableFilePath);
-    }
-
     /**
      * Verify basic usage of Reader.
      *
      * @test
-     * @covers ::next
-     * @covers ::current
-     * @covers ::key
-     * @covers ::valid
-     * @covers ::rewind
+     * @covers ::getIterator
      * @dataProvider getReaders()
      *
      * @param Reader $reader The Reader instance to use in the test.
@@ -80,18 +62,12 @@ final class ReaderTest extends TestCase
             ],
         ];
 
-        foreach ($reader as $key => $row) {
-            $this->assertSame($expected[$key], $row);
-        }
+        $this->assertSame($expected, array_values(iterator_to_array($reader)));
     }
 
     /**
      * @test
-     * @covers ::next
-     * @covers ::current
-     * @covers ::key
-     * @covers ::valid
-     * @covers ::rewind
+     * @covers ::getIterator
      */
     public function readWithCustomHeaders()
     {
@@ -138,13 +114,12 @@ final class ReaderTest extends TestCase
         );
 
         $reader = new Reader(__DIR__ . '/_files/basic.csv', $strategy);
-        foreach ($reader as $key => $row) {
-            $this->assertSame($expected[$key], $row);
-        }
+        $this->assertSame($expected, array_values(iterator_to_array($reader)));
     }
 
     /**
      * @test
+     * @covers ::getIterator
      */
     public function readNoHeaders()
     {
@@ -179,9 +154,7 @@ final class ReaderTest extends TestCase
         ];
 
         $reader = new Reader(__DIR__ . '/_files/no_headers.csv', new NoHeaderStrategy());
-        foreach ($reader as $key => $row) {
-            $this->assertSame($expected[$key], $row);
-        }
+        $this->assertSame($expected, array_values(iterator_to_array($reader)));
     }
 
     /**
@@ -222,85 +195,40 @@ final class ReaderTest extends TestCase
      * @covers ::__construct
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage $file must be a string containing a full path to a readable delimited file
-     * @dataProvider getFiles
      *
      * @return void
      */
-    public function constructInvalidFileParam($file)
+    public function constructWithFileThatDoesNotExist()
     {
-        $reader = new Reader($file);
+        new Reader(__DIR__ . '/_files/not_found.csv');
     }
 
     /**
-     * Data provider for constructInvalidFileParam() test.
-     *
-     * @return array
-     */
-    public function getFiles()
-    {
-        return [
-            [__DIR__ . '/_files/not_readable.csv'],
-            [true],
-            [null],
-            [__DIR__ . '/_files/doesnotexist.csv'],
-        ];
-    }
-
-    /**
-     * Verify behaviour of consecutive rewind().
-     *
      * @test
-     * @covers ::rewind
-     *
-     * @return void
+     * @covers ::__construct
      */
-    public function consecutiveRewind()
+    public function constructWithUnreadableFile()
     {
-        $reader = new Reader(__DIR__ . '/_files/basic.csv');
-        $count = 0;
-        foreach ($reader as $row) {
-            $count++;
+        try {
+            $unreadableFilePath = tempnam(sys_get_temp_dir(), 'csv');
+            touch($unreadableFilePath);
+            chmod($unreadableFilePath, 0220);
+            new Reader($unreadableFilePath);
+        } catch (\InvalidArgumentException $e) {
+            $this->assertSame(
+                '$file must be a string containing a full path to a readable delimited file',
+                $e->getMessage()
+            );
+        } finally {
+            unlink($unreadableFilePath);
         }
-
-        $reader->rewind();
-        $reader->rewind();
-        $this->assertSame(0, $reader->key());
-    }
-
-    /**
-     * Verify basic behaviour of current().
-     *
-     * @test
-     * @covers ::current
-     *
-     * @return void
-     */
-    public function current()
-    {
-        $reader = new Reader(__DIR__ . '/_files/basic.csv');
-        $this->assertSame(
-            [
-                'id' => 'bk101',
-                'author' => 'Gambardella, Matthew',
-                'title' => 'XML Developer\'s Guide',
-                'genre' => 'Computer',
-                'price' => '44.95',
-                'publish_date' => '2000-10-01',
-                'description' => 'An in-depth look at creating applications with XML.',
-            ],
-            $reader->current()
-        );
     }
 
     /**
      * Verify behavior of Reader with an empty file
      *
      * @test
-     * @covers ::next
-     * @covers ::current
-     * @covers ::key
-     * @covers ::valid
-     * @covers ::rewind
+     * @covers ::getIterator
      * @dataProvider getEmptyFiles
      *
      * @param Reader $reader The reader instance to use in the tests.
@@ -311,10 +239,8 @@ final class ReaderTest extends TestCase
     {
         $total = 0;
 
-        $reader->rewind();
-        while ($reader->valid()) {
+        foreach ($reader as $row) {
             $total++;
-            $reader->next();
         }
 
         $this->assertSame(0, $total);
