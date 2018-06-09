@@ -82,7 +82,7 @@ class Reader implements \Iterator
             $raw = $this->readLine();
             if ($this->current !== null) {
                 ++$this->position;
-                $this->current = array_combine($this->headers, $raw);
+                $this->current = $this->headerStrategy->createDataRow($raw);
             }
 
             //Headers given, skip first line if header line
@@ -90,7 +90,7 @@ class Reader implements \Iterator
                 $raw = $this->readLine();
             }
 
-            $this->current = array_combine($this->headers, $raw);
+            $this->current = $this->headerStrategy->createDataRow($raw);
         } catch (\Exception $e) {
             $this->current = false;
             return false;

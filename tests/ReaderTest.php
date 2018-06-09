@@ -3,6 +3,7 @@ namespace SubjectivePHPTest\Csv;
 
 use SubjectivePHP\Csv\CsvOptions;
 use SubjectivePHP\Csv\DeriveHeaderStrategy;
+use SubjectivePHP\Csv\MappedHeaderStrategy;
 use SubjectivePHP\Csv\NoHeaderStrategy;
 use SubjectivePHP\Csv\ProvidedHeaderStrategy;
 use SubjectivePHP\Csv\Reader;
@@ -79,6 +80,64 @@ final class ReaderTest extends TestCase
             ],
         ];
 
+        foreach ($reader as $key => $row) {
+            $this->assertSame($expected[$key], $row);
+        }
+    }
+
+    /**
+     * @test
+     * @covers ::next
+     * @covers ::current
+     * @covers ::key
+     * @covers ::valid
+     * @covers ::rewind
+     */
+    public function readWithCustomHeaders()
+    {
+        $expected = [
+            [
+                'Book ID' => 'bk101',
+                'Author' => 'Gambardella, Matthew',
+                'Title' => 'XML Developer\'s Guide',
+                'Genre' => 'Computer',
+                'Price' => '44.95',
+                'Publish Date' => '2000-10-01',
+                'Description' => 'An in-depth look at creating applications with XML.',
+            ],
+            [
+                'Book ID' => 'bk102',
+                'Author' => 'Ralls, Kim',
+                'Title' => 'Midnight Rain',
+                'Genre' => 'Fantasy',
+                'Price' => '5.95',
+                'Publish Date' => '2000-12-16',
+                'Description' => 'A former architect battles corporate zombies and an evil sorceress.',
+            ],
+            [
+                'Book ID' => 'bk103',
+                'Author' => 'Corets, Eva',
+                'Title' => 'Maeve Ascendant',
+                'Genre' => 'Fantasy',
+                'Price' => '5.95',
+                'Publish Date' => '2000-11-17',
+                'Description' => 'Young survivors lay the foundation for a new society in England.',
+            ],
+        ];
+
+        $strategy = new MappedHeaderStrategy(
+            [
+                'id' => 'Book ID',
+                'author' => 'Author',
+                'title' => 'Title',
+                'genre' => 'Genre',
+                'price' => 'Price',
+                'publish_date' => 'Publish Date',
+                'description' => 'Description',
+            ]
+        );
+
+        $reader = new Reader(__DIR__ . '/_files/basic.csv', $strategy);
         foreach ($reader as $key => $row) {
             $this->assertSame($expected[$key], $row);
         }
