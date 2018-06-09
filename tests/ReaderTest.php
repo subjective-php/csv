@@ -2,6 +2,7 @@
 namespace SubjectivePHPTest\Csv;
 
 use SubjectivePHP\Csv\CsvOptions;
+use SubjectivePHP\Csv\HeaderStrategy;
 use SubjectivePHP\Csv\Reader;
 use PHPUnit\Framework\TestCase;
 
@@ -82,6 +83,47 @@ final class ReaderTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function readNoHeaders()
+    {
+        $expected = [
+            [
+                'bk101',
+                'Gambardella, Matthew',
+                'XML Developer\'s Guide',
+                'Computer',
+                '44.95',
+                '2000-10-01',
+                'An in-depth look at creating applications with XML.',
+            ],
+            [
+                'bk102',
+                'Ralls, Kim',
+                'Midnight Rain',
+                'Fantasy',
+                '5.95',
+                '2000-12-16',
+                'A former architect battles corporate zombies and an evil sorceress.',
+            ],
+            [
+                'bk103',
+                'Corets, Eva',
+                'Maeve Ascendant',
+                'Fantasy',
+                '5.95',
+                '2000-11-17',
+                'Young survivors lay the foundation for a new society in England.',
+            ],
+        ];
+
+        $reader = new Reader(__DIR__ . '/_files/no_headers.csv', HeaderStrategy::none());
+        foreach ($reader as $key => $row) {
+            $this->assertSame($expected[$key], $row);
+        }
+    }
+
+    /**
      * Data provider for basic usage test
      *
      * @return array
@@ -91,10 +133,22 @@ final class ReaderTest extends TestCase
         $headers = ['id', 'author', 'title', 'genre', 'price', 'publish_date', 'description'];
         return [
             [new Reader(__DIR__ . '/_files/basic.csv')],
-            [new Reader(__DIR__ . '/_files/basic.csv', $headers)],
-            [new Reader(__DIR__ . '/_files/no_headers.csv', $headers)],
-            [new Reader(__DIR__ . '/_files/pipe_delimited.txt', $headers, new CsvOptions('|'))],
-            [new Reader(__DIR__ . '/_files/tab_delimited.txt', $headers, new CsvOptions("\t"))],
+            [new Reader(__DIR__ . '/_files/basic.csv', HeaderStrategy::provide($headers))],
+            [new Reader(__DIR__ . '/_files/no_headers.csv', HeaderStrategy::provide($headers))],
+            [
+                new Reader(
+                    __DIR__ . '/_files/pipe_delimited.txt',
+                    HeaderStrategy::provide($headers),
+                    new CsvOptions('|')
+                )
+            ],
+            [
+                new Reader(
+                    __DIR__ . '/_files/tab_delimited.txt',
+                    HeaderStrategy::provide($headers),
+                    new CsvOptions("\t")
+                )
+            ],
         ];
     }
 
@@ -216,7 +270,7 @@ final class ReaderTest extends TestCase
         return [
             [new Reader(__DIR__ . '/_files/empty.csv')],
             [new Reader(__DIR__ . '/_files/headers_only.csv')],
-            [new Reader(__DIR__ . '/_files/headers_only.csv', $headers)],
+            [new Reader(__DIR__ . '/_files/headers_only.csv', HeaderStrategy::provide($headers))],
         ];
     }
 }

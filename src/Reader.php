@@ -2,6 +2,8 @@
 
 namespace SubjectivePHP\Csv;
 
+use SplFileObject;
+
 /**
  * Simple class for reading delimited data files
  */
@@ -10,16 +12,9 @@ class Reader implements \Iterator
     /**
      * The column headers.
      *
-     * @var array|null
+     * @var array
      */
     private $headers;
-
-    /**
-     * File pointer to the csv file.
-     *
-     * @var resource
-     */
-    private $handle;
 
     /**
      * The current file pointer position.
@@ -36,21 +31,20 @@ class Reader implements \Iterator
     private $current = null;
 
     /**
-     * @var CsvOptions
+     * @var SplFileObject
      */
-    private $csvOptions;
+    private $fileObject;
 
     /**
      * Create a new Reader instance.
      *
-     * @param string $file           The full path to the csv file.
-     * @param array  $headers        The column headers. If null, the headers will be derived from the first line in
-     *                               the file.
-     * @param CsvOptions $csvOptions Options for the csv file.
+     * @param string                  $file           The full path to the csv file.
+     * @param HeaderStrategyInterface $headerStrategy Strategy for obtaining headers of the file.
+     * @param CsvOptions              $csvOptions     Options for the csv file.
      *
      * @throws \InvalidArgumentException Thrown if $file is not readable.
      */
-    public function __construct($file, array $headers = null, CsvOptions $csvOptions = null)
+    public function __construct($file, HeaderStrategyInterface $headerStrategy = null, CsvOptions $csvOptions = null)
     {
         if (!is_readable((string)$file)) {
             throw new \InvalidArgumentException(
@@ -58,10 +52,18 @@ class Reader implements \Iterator
             );
         }
 
-        $this->csvOptions = $csvOptions ?? new CsvOptions();
+        $csvOptions = $csvOptions ?? new CsvOptions();
+        $headerStrategy = $headerStrategy ?? HeaderStrategy::derive();
 
-        $this->headers = $headers;
-        $this->handle = fopen((string)$file, 'r');
+        $this->fileObject = new SplFileObject($file);
+        $this->fileObject->setFlags(SplFileObject::READ_CSV);
+        $this->fileObject->setCsvControl(
+            $csvOptions->getDelimiter(),
+            $csvOptions->getEnclosure(),
+            $csvOptions->getEscapeChar()
+        );
+
+        $this->headers = $headerStrategy->getHeaders($this->fileObject);
     }
 
     /**
@@ -76,13 +78,6 @@ class Reader implements \Iterator
             if ($this->current !== null) {
                 ++$this->position;
                 $this->current = array_combine($this->headers, $raw);
-            }
-
-            if ($this->headers === null) {
-                //No headers given, derive from first line of file
-                $this->headers = $raw;
-                $this->current = array_combine($this->headers, $this->readLine());
-                return;
             }
 
             //Headers given, skip first line if header line
@@ -106,13 +101,7 @@ class Reader implements \Iterator
      */
     private function readLine()
     {
-        $raw = fgetcsv(
-            $this->handle,
-            0,
-            $this->csvOptions->getDelimiter(),
-            $this->csvOptions->getEnclosure(),
-            $this->csvOptions->getEscapeChar()
-        );
+        $raw = $this->fileObject->fgetcsv();
         if (empty($raw)) {
             throw new \Exception('Empty line read');
         }
@@ -151,7 +140,7 @@ class Reader implements \Iterator
      */
     public function rewind()
     {
-        rewind($this->handle);
+        $this->fileObject->rewind();
         $this->position = 0;
         $this->current = null;
     }
@@ -167,7 +156,7 @@ class Reader implements \Iterator
             $this->next();
         }
 
-        return !feof($this->handle) && $this->current !== false;
+        return !$this->fileObject->eof() && $this->current !== false;
     }
 
     /**
@@ -177,8 +166,6 @@ class Reader implements \Iterator
      */
     public function __destruct()
     {
-        if (is_resource($this->handle)) {
-            fclose($this->handle);
-        }
+        $this->fileObject = null;
     }
 }
