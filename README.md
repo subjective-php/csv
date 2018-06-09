@@ -45,4 +45,5 @@ With a checkout of the code get [Composer](http://getcomposer.org) in your PATH 
 ```sh
 ./composer install
 ./vendor/bin/phpunit
+./vendor/bin/phpcs
 ```
