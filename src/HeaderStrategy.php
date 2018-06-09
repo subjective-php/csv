@@ -33,11 +33,7 @@ final class HeaderStrategy implements HeaderStrategyInterface
      */
     public static function provide(array $headers) : HeaderStrategyInterface
     {
-        return new self(
-            function () use ($headers) : array {
-                return $headers;
-            }
-        );
+        return new ProvidedHeaderStrategy($headers);
     }
 
     /**

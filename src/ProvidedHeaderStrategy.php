@@ -1,0 +1,26 @@
+<?php
+
+namespace SubjectivePHP\Csv;
+
+use SplFileObject;
+
+/**
+ * Header strategy which uses the provided headers array.
+ */
+final class ProvidedHeaderStrategy implements HeaderStrategyInterface
+{
+    /**
+     * @var array
+     */
+    private $headers;
+
+    public function __construct(array $headers)
+    {
+        $this->headers = $headers;
+    }
+
+    public function getHeaders(SplFileObject $fileObject) : array
+    {
+        return $this->headers;
+    }
+}
