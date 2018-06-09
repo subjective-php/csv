@@ -19,7 +19,6 @@ final class DeriveHeaderStrategyTest extends TestCase
     {
         $strategy = new DeriveHeaderStrategy();
         $fileObject = $this->getFileObject();
-        $headers = $strategy->getHeaders($fileObject);
         $this->assertSame(
             ['id', 'author', 'title', 'genre', 'price', 'publish_date', 'description'],
             $strategy->getHeaders($fileObject)
@@ -34,7 +33,7 @@ final class DeriveHeaderStrategyTest extends TestCase
     {
         $strategy = new DeriveHeaderStrategy();
         $fileObject = $this->getFileObject();
-        $headers = $strategy->getHeaders($fileObject);
+        $strategy->getHeaders($fileObject);
         $this->assertTrue($strategy->isHeaderRow($fileObject->fgetcsv()));
     }
 
@@ -46,7 +45,7 @@ final class DeriveHeaderStrategyTest extends TestCase
     {
         $strategy = new DeriveHeaderStrategy();
         $fileObject = $this->getFileObject();
-        $headers = $strategy->getHeaders($fileObject);
+        $strategy->getHeaders($fileObject);
         $fileObject->fgetcsv();
         $this->assertFalse($strategy->isHeaderRow($fileObject->fgetcsv()));
     }
