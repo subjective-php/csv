@@ -1,4 +1,4 @@
-# Chadicus\Csv
+# SubjectivePHP\Csv
 
 [![Build Status](https://travis-ci.org/subjective-php/csv.svg?branch=master)](https://travis-ci.org/subjective-php/csv)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/subjective-php/csv/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/subjective-php/csv/?branch=master)
@@ -18,7 +18,7 @@ A collection of classes to work with delimited files
 
 ## Requirements
 
-Chadicus\Exceptions requires PHP 5.6 (or later).
+SubjectivePHP\Csv requires PHP 7.0 (or later).
 
 ## Composer
 To add the library as a local, per-project dependency use [Composer](http://getcomposer.org)! Simply add a dependency on `subjective-php/csv` to your project's `composer.json` file such as:
