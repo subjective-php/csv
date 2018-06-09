@@ -27,4 +27,9 @@ final class DeriveHeaderStrategy implements HeaderStrategyInterface
         $fileObject->rewind();
         return $this->headers;
     }
+
+    public function isHeaderRow(array $row) : bool
+    {
+        return $row === $this->headers;
+    }
 }

@@ -12,17 +12,51 @@ use PHPUnit\Framework\TestCase;
  */
 final class ProvidedHeaderStrategyTest extends TestCase
 {
+    const HEADERS = ['id', 'author', 'title', 'genre', 'price', 'publish_date', 'description'];
+
     /**
      * @test
      * @covers ::getHeaders
      */
     public function getHeaders()
     {
-        $headers = ['id', 'author', 'title', 'genre', 'price', 'publish_date', 'description'];
+        $fileObject = $this->getFileObject();
+        $strategy = $this->getStrategy();
+        $this->assertSame(self::HEADERS, $strategy->getHeaders($fileObject));
+    }
+
+    /**
+     * @test
+     * @covers ::isHeaderRow
+     */
+    public function rowIsHeaderRow()
+    {
+        $strategy = $this->getStrategy();
+        $this->assertTrue($strategy->isHeaderRow(self::HEADERS));
+    }
+
+    /**
+     * @test
+     * @covers ::isHeaderRow
+     */
+    public function rowIsNotHeaderRow()
+    {
+        $strategy = $this->getStrategy();
+        $fileObject = $this->getFileObject();
+        $fileObject->fgetcsv();
+        $this->assertFalse($strategy->isHeaderRow($fileObject->fgetcsv()));
+    }
+
+    private function getFileObject() : SplFileObject
+    {
         $fileObject = new SplFileObject(__DIR__ . '/_files/basic.csv');
         $fileObject->setFlags(SplFileObject::READ_CSV);
         $fileObject->setCsvControl(',');
-        $strategy = new ProvidedHeaderStrategy($headers);
-        $this->assertSame($headers, $strategy->getHeaders($fileObject));
+        return $fileObject;
+    }
+
+    private function getStrategy() : ProvidedHeaderStrategy
+    {
+        return new ProvidedHeaderStrategy(self::HEADERS);
     }
 }

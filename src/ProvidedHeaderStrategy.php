@@ -23,4 +23,9 @@ final class ProvidedHeaderStrategy implements HeaderStrategyInterface
     {
         return $this->headers;
     }
+
+    public function isHeaderRow(array $row) : bool
+    {
+        return $row === $this->headers;
+    }
 }

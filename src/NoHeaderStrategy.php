@@ -16,4 +16,9 @@ final class NoHeaderStrategy implements HeaderStrategyInterface
         $fileObject->rewind();
         return $headers;
     }
+
+    public function isHeaderRow(array $row) : bool
+    {
+        return false;
+    }
 }

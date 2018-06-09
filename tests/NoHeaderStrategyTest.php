@@ -26,4 +26,18 @@ final class NoHeaderStrategyTest extends TestCase
             $strategy->getHeaders($fileObject)
         );
     }
+
+    /**
+     * @test
+     * @covers ::isHeaderRow
+     */
+    public function isHeaderRowAlwaysReturnsFalse()
+    {
+        $fileObject = new SplFileObject(__DIR__ . '/_files/no_headers.csv');
+        $fileObject->setFlags(SplFileObject::READ_CSV);
+        $fileObject->setCsvControl(',');
+        $strategy = new NoHeaderStrategy();
+        $this->assertFalse($strategy->isHeaderRow($fileObject->fgetcsv()));
+        $this->assertFalse($strategy->isHeaderRow($fileObject->fgetcsv()));
+    }
 }
