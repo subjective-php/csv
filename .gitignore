@@ -3,3 +3,4 @@ composer.lock
 clover.xml
 phpunit.xml
 phpcs.xml
+.phpunit.result.cache

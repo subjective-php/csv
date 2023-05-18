@@ -1,8 +1,6 @@
 # SubjectivePHP\Csv
 
-[![Build Status](https://travis-ci.org/subjective-php/csv.svg?branch=master)](https://travis-ci.org/subjective-php/csv)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/subjective-php/csv/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/subjective-php/csv/?branch=master)
-[![Coverage Status](https://coveralls.io/repos/github/subjective-php/csv/badge.svg?branch=master)](https://coveralls.io/github/subjective-php/csv?branch=master)
 
 [![Latest Stable Version](https://poser.pugx.org/subjective-php/csv/v/stable)](https://packagist.org/packages/subjective-php/csv)
 [![Latest Unstable Version](https://poser.pugx.org/subjective-php/csv/v/unstable)](https://packagist.org/packages/subjective-php/csv)
