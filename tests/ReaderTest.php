@@ -14,20 +14,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class ReaderTest extends TestCase
 {
-    private $unreadableFilePath;
-
-    public function setUp()
-    {
-        $this->unreadableFilePath = tempnam(sys_get_temp_dir(), 'csv');
-        touch($this->unreadableFilePath);
-        chmod($this->unreadableFilePath, 0220);
-    }
-
-    public function tearDown()
-    {
-        unlink($this->unreadableFilePath);
-    }
-
     /**
      * Verify basic usage of Reader.
      *
@@ -85,7 +71,7 @@ final class ReaderTest extends TestCase
      *
      * @return array
      */
-    public function getReaders()
+    public static function getReaders()
     {
         $headers = ['id', 'author', 'title', 'genre', 'price', 'publish_date', 'description'];
         return [
@@ -104,14 +90,14 @@ final class ReaderTest extends TestCase
      *
      * @test
      * @covers ::__construct
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $file must be a string containing a full path to a readable delimited file
      * @dataProvider getFiles
      *
      * @return void
      */
     public function constructInvalidFileParam($file)
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('$file must be a string containing a full path to a readable delimited file');
         $reader = new Reader($file);
     }
 
@@ -120,7 +106,7 @@ final class ReaderTest extends TestCase
      *
      * @return array
      */
-    public function getFiles()
+    public static function getFiles()
     {
         return [
             [__DIR__ . '/_files/not_readable.csv'],
@@ -135,13 +121,13 @@ final class ReaderTest extends TestCase
      *
      * @test
      * @covers ::__construct
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $delimiter must be a single character string
      *
      * @return void
      */
     public function constructInvalidDelimiter()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('$delimiter must be a single character string');
         new Reader(__DIR__ . '/_files/basic.csv', null, 'too long');
     }
 
@@ -150,13 +136,13 @@ final class ReaderTest extends TestCase
      *
      * @test
      * @covers ::__construct
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $enclosure must be a single character string
      *
      * @return void
      */
     public function constructInvalidEnclosure()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('$enclosure must be a single character string');
         new Reader(__DIR__ . '/_files/basic.csv', null, ',', 123);
     }
 
@@ -165,13 +151,13 @@ final class ReaderTest extends TestCase
      *
      * @test
      * @covers ::__construct
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage $escapeChar must be a single character string
      *
      * @return void
      */
     public function constructInvalidEscapeChar()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('$escapeChar must be a single character string');
         new Reader(__DIR__ . '/_files/basic.csv', null, ',', '"', null);
     }
 
@@ -254,7 +240,7 @@ final class ReaderTest extends TestCase
      *
      * @return array
      */
-    public function getEmptyFiles()
+    public static function getEmptyFiles()
     {
         $headers = ['id', 'author', 'title', 'genre', 'price', 'publish_date', 'description'];
         return [
